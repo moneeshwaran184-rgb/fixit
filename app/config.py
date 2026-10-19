@@ -5,8 +5,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 APP_DIR = BASE_DIR / "app"
 STATIC_DIR = BASE_DIR / "static"
-UPLOAD_DIR = STATIC_DIR / "uploads"
-DB_PATH = BASE_DIR / "fixit.db"
+UPLOAD_DIR = Path("/tmp/fixit-uploads") if os.getenv("VERCEL") else STATIC_DIR / "uploads"
+DB_PATH = Path("/tmp/fixit.db") if os.getenv("VERCEL") else BASE_DIR / "fixit.db"
 
 # Ensure upload directory exists
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
