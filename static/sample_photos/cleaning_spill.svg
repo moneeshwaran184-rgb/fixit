@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" fill="#134e4a" rx="8"/>
+  <path d="M140 180 Q190 140 230 170 T280 200 T210 240 T130 210 Z" fill="#5eead4" opacity="0.75"/>
+  <rect x="220" y="90" width="25" height="60" rx="4" fill="#f59e0b"/>
+  <text x="200" y="275" fill="#ccfbf1" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Restroom Chemical Spill</text>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" fill="#0c4a6e" rx="8"/>
+  <rect x="40" y="40" width="320" height="25" fill="#64748b" rx="4"/>
+  <rect x="180" y="65" width="40" height="70" fill="#475569" rx="2"/>
+  <path d="M190 140 C190 130, 210 130, 210 140 C210 155, 190 155, 190 140 Z" fill="#38bdf8"/>
+  <path d="M195 180 C195 170, 205 170, 205 180 C205 190, 195 190, 195 180 Z" fill="#38bdf8"/>
+  <ellipse cx="200" cy="240" rx="90" ry="22" fill="#0284c7" opacity="0.75"/>
+  <text x="200" y="280" fill="#7dd3fc" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Ceiling Pipe Water Leak</text>
+</svg>

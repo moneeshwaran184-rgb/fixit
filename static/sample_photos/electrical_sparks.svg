@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" fill="#1e1b4b" rx="8"/>
+  <rect x="130" y="60" width="140" height="180" rx="10" fill="#334155" stroke="#e2e8f0" stroke-width="4"/>
+  <circle cx="170" cy="110" r="14" fill="#ef4444"/>
+  <circle cx="230" cy="110" r="14" fill="#22c55e"/>
+  <rect x="160" y="160" width="80" height="20" rx="4" fill="#0f172a"/>
+  <path d="M200 40 L220 90 L195 95 L225 150 L185 105 L210 100 Z" fill="#f59e0b" stroke="#fef08a" stroke-width="2"/>
+  <circle cx="150" cy="80" r="4" fill="#facc15"/><circle cx="240" cy="70" r="3" fill="#facc15"/><circle cx="260" cy="130" r="4" fill="#facc15"/>
+  <text x="200" y="270" fill="#f87171" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Electrical Spark Hazard</text>
+</svg>

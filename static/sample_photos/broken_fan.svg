@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <rect width="400" height="300" fill="#1e293b" rx="8"/>
+  <circle cx="200" cy="140" r="35" fill="#475569" stroke="#94a3b8" stroke-width="4"/>
+  <rect x="193" y="30" width="14" height="80" fill="#64748b"/>
+  <path d="M200 140 L310 110 L300 135 Z" fill="#94a3b8"/>
+  <path d="M200 140 L120 220 L105 200 Z" fill="#94a3b8"/>
+  <path d="M200 140 L120 80 L140 65 Z" fill="#94a3b8"/>
+  <path d="M230 130 Q250 110 270 140" stroke="#f87171" stroke-width="3" fill="none" stroke-dasharray="4"/>
+  <text x="200" y="265" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Malfunctioning Ceiling Fan</text>
+</svg>
