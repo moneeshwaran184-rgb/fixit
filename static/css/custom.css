@@ -66,15 +66,25 @@ body {
 .medium-border { border-left: 4px solid var(--priority-medium-fg); }
 .low-border { border-left: 4px solid var(--priority-low-fg); }
 
-/* Card Transitions */
+/* Card transitions – rise & fade in */
 .issue-card {
-  transition: transform var(--anim-duration-short) cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow var(--anim-duration-short) cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, box-shadow;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: transform var(--anim-duration-medium) cubic-bezier(0.16,1,0.3,1),
+              opacity var(--anim-duration-medium) ease-out,
+              box-shadow var(--anim-duration-short) ease;
+  will-change: transform, opacity, box-shadow;
+}
+.issue-card.new {
+  animation: cardEnter var(--anim-duration-long) ease-out forwards;
+}
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .issue-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px -5px rgba(15,23,42,0.08), 0 6px 8px -6px rgba(15,23,42,0.04);
 }
 
 /* Glassmorphism panel */
@@ -104,6 +114,7 @@ body {
 .animate-fade-in { animation: fadeIn var(--anim-duration-medium) ease-out forwards; }
 
 /* Status and Priority Badges */
+/* Badges – smooth colour change */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -114,6 +125,9 @@ body {
   font-weight: 600;
   line-height: 1;
   border: 1px solid transparent;
+  transition: background-color var(--anim-duration-short) ease,
+              color var(--anim-duration-short) ease,
+              border-color var(--anim-duration-short) ease;
 }
 .badge-submitted,
 .badge-pending {
@@ -152,41 +166,49 @@ body {
   border-color: #bbf7d0;
 }
 
-/* Buttons – subtle hover/press */
+/* Buttons – noticeable hover/press */
 button,
 input[type="button"],
 input[type="submit"],
 .btn {
   cursor: pointer;
-  transition: background-color var(--anim-duration-short) ease, transform var(--anim-duration-short) ease;
+  transition: background-color var(--anim-duration-short) ease,
+              transform var(--anim-duration-short) ease,
+              box-shadow var(--anim-duration-short) ease;
 }
 button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover,
 .btn:hover {
   background-color: var(--primary-hover);
-  transform: translateY(-1px);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 button:active,
 input[type="button"]:active,
 input[type="submit"]:active,
 .btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* Details element – smooth reveal */
+/* Details – slide & fade */
 details[open] > * {
-  animation: fadeIn var(--anim-duration-medium) ease-out;
+  animation: slideFade var(--anim-duration-medium) ease-out forwards;
+}
+@keyframes slideFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Loading spinner */
+/* Loading spinner – more pronounced */
 .spinner {
   border: 2px solid var(--bg-slate);
   border-top: 2px solid var(--primary);
   border-radius: 50%;
-  width: 1rem;
-  height: 1rem;
-  animation: spin 1s linear infinite;
+  width: 1.2rem;
+  height: 1.2rem;
+  animation: spin var(--anim-duration-long) linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
