@@ -25,6 +25,7 @@ const App = {
     }
 
     // Initialize sub-controllers
+    if (window.HeroScrollAnimation) window.HeroScrollAnimation.init();
     if (window.Dashboard) window.Dashboard.init();
     if (window.ReportForm) window.ReportForm.init();
     if (window.Admin) window.Admin.init();
@@ -120,15 +121,25 @@ const App = {
     }
 
     // Trigger tab specific refreshes
-    if (tabName === 'dashboard' && window.Dashboard) {
-      window.Dashboard.loadIssues();
-      window.Dashboard.loadQuickStats();
-    } else if (tabName === 'admin' && window.Admin) {
-      window.Admin.loadAdminData();
-    } else if (tabName === 'analytics' && window.Analytics) {
-      window.Analytics.loadAnalytics();
-    } else if (tabName === 'myreports' && window.MyReports) {
-      window.MyReports.load();
+    if (tabName === 'dashboard') {
+      if (window.Dashboard) {
+        window.Dashboard.loadIssues();
+        window.Dashboard.loadQuickStats();
+      }
+      if (window.HeroScrollAnimation) {
+        window.HeroScrollAnimation.onTabActivated('dashboard');
+      }
+    } else {
+      if (window.HeroScrollAnimation) {
+        window.HeroScrollAnimation.onTabDeactivated();
+      }
+      if (tabName === 'admin' && window.Admin) {
+        window.Admin.loadAdminData();
+      } else if (tabName === 'analytics' && window.Analytics) {
+        window.Analytics.loadAnalytics();
+      } else if (tabName === 'myreports' && window.MyReports) {
+        window.MyReports.load();
+      }
     }
 
     this.refreshIcons();
@@ -166,6 +177,9 @@ const App = {
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      if (window.HeroScrollAnimation) {
+        window.HeroScrollAnimation.stopRaf();
+      }
       this.refreshIcons();
     }
   },
@@ -176,6 +190,9 @@ const App = {
       modal.classList.remove('flex');
     });
     document.body.style.overflow = '';
+    if (this.currentTab === 'dashboard' && window.HeroScrollAnimation) {
+      window.HeroScrollAnimation.onTabActivated('dashboard');
+    }
   },
 
   setupAuthListeners() {
