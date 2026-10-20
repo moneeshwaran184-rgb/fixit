@@ -68,8 +68,8 @@ body {
 
 /* Card transitions – rise & fade in */
 .issue-card {
-  opacity: 0;
-  transform: translateY(8px);
+  opacity: 1;
+  transform: none;
   transition: transform var(--anim-duration-medium) cubic-bezier(0.16,1,0.3,1),
               opacity var(--anim-duration-medium) ease-out,
               box-shadow var(--anim-duration-short) ease;
