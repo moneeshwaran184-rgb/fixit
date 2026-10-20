@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -99,6 +99,10 @@
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
             Report an Issue
           </button>
+          <button data-tab-target="myreports" class="px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-50">
+            <i data-lucide="list" class="w-4 h-4"></i>
+            My Reports
+          </button>
           <button data-tab-target="admin" class="hidden px-3.5 py-2 rounded-xl text-sm font-medium transition flex items-center gap-2 text-slate-600 hover:bg-slate-50">
             <i data-lucide="wrench" class="w-4 h-4"></i>
             Admin Management
@@ -152,6 +156,10 @@
       <button data-tab-target="report" class="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 text-slate-700 hover:bg-slate-50">
         <i data-lucide="plus-circle" class="w-4 h-4 text-indigo-600"></i>
         Report an Issue
+      </button>
+      <button data-tab-target="myreports" class="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 text-slate-700 hover:bg-slate-50">
+        <i data-lucide="list" class="w-4 h-4 text-indigo-600"></i>
+        My Reports
       </button>
       <button data-tab-target="admin" class="hidden w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 text-slate-700 hover:bg-slate-50">
         <i data-lucide="wrench" class="w-4 h-4 text-indigo-600"></i>
@@ -318,6 +326,44 @@
       <!-- Issues Cards Grid -->
       <div id="issuesGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <!-- Rendered dynamically by dashboard.js -->
+      </div>
+
+    </section>
+
+    <!-- ================= MY REPORTS TAB ================= -->
+    <section id="section-myreports" class="tab-section hidden space-y-8">
+
+      <!-- Page Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i data-lucide="list" class="w-5 h-5 text-indigo-600"></i>
+            My Reports
+          </h2>
+          <p class="text-sm text-slate-500 mt-0.5">Reports you personally submitted</p>
+        </div>
+        <button data-tab-target="report" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition flex items-center gap-2 shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i> New Report
+        </button>
+      </div>
+
+      <!-- Sign-in prompt (shown when signed out) -->
+      <div id="myreportsSigninPrompt" class="hidden bg-white rounded-2xl border border-dashed border-slate-200 py-16 px-4 text-center">
+        <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="log-in" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-base font-semibold text-slate-800 mb-1">Sign in to view your reports</h3>
+        <p class="text-sm text-slate-500 mb-5">You need to be signed in with a student account to see your personal reports.</p>
+        <button id="myreportsSigninBtn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm rounded-xl transition">
+          Sign In
+        </button>
+      </div>
+
+      <!-- Reports grid (shown when signed in) -->
+      <div id="myreportsContent" class="hidden">
+        <div id="myReportsGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Rendered by myreports.js -->
+        </div>
       </div>
 
     </section>
@@ -1213,6 +1259,7 @@
   <script src="/static/js/report-form.js"></script>
   <script src="/static/js/admin.js"></script>
   <script src="/static/js/analytics.js"></script>
+  <script src="/static/js/myreports.js"></script>
   <script src="/static/js/app.js"></script>
 
 </body>

@@ -600,6 +600,35 @@ const API = {
     }
   },
 
+  async getMyIssues() {
+    if (!this.client) throw new Error('Supabase client not initialized');
+
+    // getUser() makes a network round-trip to verify the token server-side
+    const { data: { user }, error: authErr } = await this.client.auth.getUser();
+    if (authErr || !user) {
+      throw new Error('not_authenticated');
+    }
+
+    // Query reports table directly — reporter_id is not in the public_reports view.
+    // The Supabase JS client automatically attaches the user's JWT, so the
+    // RLS policy (reporter_id = auth.uid()) is enforced server-side.
+    // We select only the columns needed for display; reporter_id itself is
+    // intentionally omitted from the returned payload.
+    const { data, error } = await this.client
+      .from('reports')
+      .select('id, created_at, description, location, status, priority, category, specific_area, photo_url, video_url, reporter_id')
+      .eq('reporter_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('getMyIssues error:', error);
+      throw new Error(error.message || 'Failed to load your reports');
+    }
+
+    const formatted = (data || []).map(formatIssue);
+    return { issues: formatted, total: formatted.length };
+  },
+
   async getSession() {
     if (!this.client) return null;
     try {

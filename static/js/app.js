@@ -18,7 +18,7 @@ const App = {
 
     // Handle initial navigation tab from URL hash
     const hash = window.location.hash.replace('#', '');
-    if (['dashboard', 'report', 'admin', 'analytics'].includes(hash)) {
+    if (['dashboard', 'report', 'admin', 'analytics', 'myreports'].includes(hash)) {
       await this.switchTab(hash);
     } else {
       await this.switchTab('dashboard');
@@ -127,6 +127,8 @@ const App = {
       window.Admin.loadAdminData();
     } else if (tabName === 'analytics' && window.Analytics) {
       window.Analytics.loadAnalytics();
+    } else if (tabName === 'myreports' && window.MyReports) {
+      window.MyReports.load();
     }
 
     this.refreshIcons();
