@@ -54,6 +54,14 @@ const App = {
         mobileNav.classList.toggle('hidden');
       });
     }
+
+    // Handle URL hash changes directly
+    window.addEventListener('hashchange', async () => {
+      const hash = window.location.hash.replace('#', '');
+      if (['dashboard', 'report', 'admin', 'analytics', 'myreports'].includes(hash) && hash !== this.currentTab) {
+        await this.switchTab(hash);
+      }
+    });
   },
 
   async switchTab(tabName) {
@@ -84,6 +92,17 @@ const App = {
         this.pendingRedirectTab = 'report';
         this.showToast('Please sign in as a student to report an issue.', 'info');
         this.openModal('studentAuthModal');
+        return;
+      }
+    }
+
+    // 3. Role-based Route Protection for My Reports Tab (Admins cannot access, return to Campus Feed)
+    if (tabName === 'myreports') {
+      const isAdmin = await API.isAdmin();
+      if (isAdmin) {
+        if (this.currentTab !== 'dashboard') {
+          await this.switchTab('dashboard');
+        }
         return;
       }
     }
@@ -351,9 +370,23 @@ const App = {
         }
       });
 
+      // Hide My Reports navigation tab whenever an admin is signed in; keep available for signed-in students
+      document.querySelectorAll('[data-tab-target="myreports"]').forEach(el => {
+        if (isAdmin) {
+          el.classList.add('hidden');
+        } else {
+          el.classList.remove('hidden');
+        }
+      });
+
       // If currently on report tab when verified as admin, redirect to admin management
       if (isAdmin && this.currentTab === 'report') {
         await this.switchTab('admin');
+      }
+
+      // If currently on myreports tab when verified as admin, return to Campus Feed
+      if (isAdmin && (this.currentTab === 'myreports' || window.location.hash === '#myreports')) {
+        await this.switchTab('dashboard');
       }
 
       if (user) {

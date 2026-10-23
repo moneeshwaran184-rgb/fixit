@@ -58,7 +58,7 @@
       this.frameIndicator = document.getElementById('heroFrameIndicator');
       this.progressBar = document.getElementById('heroScrollProgress');
 
-      if (!this.canvas || !this.heroBanner) {
+      if (!this.canvas) {
         return;
       }
 
@@ -71,7 +71,7 @@
       // Setup window scroll listener
       window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
 
-      // Setup optional mouse wheel scrubbing on the hero banner
+      // Setup optional mouse wheel scrubbing on Campus Feed
       this.setupHeroWheel();
 
       // Begin preloading assets
@@ -82,15 +82,9 @@
     },
 
     setupHeroWheel() {
-      if (!this.heroBanner) return;
-
-      // Allow direct wheel scrubbing when hovering the hero banner
-      this.heroBanner.addEventListener('wheel', (e) => {
-        // Only run if dashboard tab is active
+      // Allow direct wheel scrubbing when on Campus Feed
+      window.addEventListener('wheel', (e) => {
         if (!this.isDashboardActive()) return;
-
-        // Note: We do NOT prevent default so the page still scrolls naturally,
-        // but we trigger an immediate responsiveness calculation
         this.handleScroll();
       }, { passive: true });
     },
@@ -103,12 +97,18 @@
     },
 
     handleResize() {
-      if (!this.canvas || !this.heroBanner) return;
-      const rect = this.heroBanner.getBoundingClientRect();
+      if (!this.canvas) return;
+      if (!this.heroBanner) this.heroBanner = document.getElementById('homepageHeroBanner');
+
       const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2x for high performance
 
-      const width = Math.round(rect.width * dpr);
-      const height = Math.round(rect.height * dpr);
+      // Size canvas to the hero banner, not the full viewport
+      const banner = this.heroBanner;
+      const bw = banner ? banner.offsetWidth : window.innerWidth;
+      const bh = banner ? banner.offsetHeight : 320;
+
+      const width = Math.round(bw * dpr);
+      const height = Math.round(bh * dpr);
 
       if (this.canvas.width !== width || this.canvas.height !== height) {
         this.canvas.width = width;
@@ -187,38 +187,30 @@
     },
 
     handleScroll() {
-      // Confine animation strictly to homepage hero:
-      // If user is on another tab or modal is fullscreen, pause execution
+      // Confine animation strictly to Campus Feed (#dashboard):
       if (!this.isDashboardActive()) {
         this.stopRaf();
         return;
       }
 
-      if (!this.heroBanner) return;
-
-      const rect = this.heroBanner.getBoundingClientRect();
-      const heroHeight = this.heroBanner.offsetHeight;
-
-      // Check if hero banner is currently visible in viewport
-      // rect.bottom > 0 means the bottom of the hero has not scrolled past top of window
-      // rect.top < window.innerHeight means top of hero has entered the window
-      const inView = rect.bottom > 0 && rect.top < window.innerHeight;
-      this.isHeroInView = inView;
-
-      if (!inView) {
+      // Respect prefers-reduced-motion
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         this.stopRaf();
         return;
       }
 
-      // Calculate scroll progress through the hero banner
-      // At window.scrollY = 0, progress = 0
-      // As the hero banner scrolls up, progress advances from 0.0 to 1.0
+      this.isHeroInView = true;
+
+      // Calculate scroll progress across the entire Campus Feed
+      // At top (scrollY = 0), progress = 0.
+      // As visitor scrolls through feed, progress advances smoothly through all 180 frames.
       const scrollY = window.scrollY || window.pageYOffset || 0;
-      
-      // Calculate effective scroll distance for the 180 frames:
-      // Map scroll from 0 down to when hero banner reaches top of viewport
-      const scrollRange = Math.max(heroHeight * 1.1, 480);
-      const rawProgress = scrollY / scrollRange;
+      const scrollHeight = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight || 0
+      );
+      const maxScroll = Math.max(scrollHeight - window.innerHeight, 800);
+      const rawProgress = scrollY / maxScroll;
       this.targetProgress = Math.min(1, Math.max(0, rawProgress));
 
       this.startRaf();
@@ -237,8 +229,8 @@
     tick() {
       if (!this.isRafRunning) return;
 
-      // Boundary check: pause if tab changed or hero scrolled completely out of view
-      if (!this.isDashboardActive() || !this.isHeroInView) {
+      // Boundary check: pause if tab changed
+      if (!this.isDashboardActive()) {
         this.stopRaf();
         return;
       }
@@ -406,12 +398,12 @@
 
     /**
      * Tab lifecycle hooks:
-     * Called by App.switchTab() to ensure zero animations run on other tabs
+     * Called by App.switchTab() to pause the RAF on other tabs.
      */
     onTabActivated(tabName) {
       if (tabName === 'dashboard') {
         this.isTabActive = true;
-        // Recalculate dimensions & resume
+        // Recalculate banner dimensions & resume
         this.handleResize();
         this.handleScroll();
       } else {

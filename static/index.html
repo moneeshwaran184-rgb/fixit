@@ -176,16 +176,13 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <!-- ================= TAB 1: USER DASHBOARD ================= -->
-    <section id="section-dashboard" class="tab-section space-y-8">
-      
-      <!-- Hero Banner with Scroll-Driven Drone Flyover Sequence -->
+    <section id="section-dashboard" class="tab-section space-y-8 relative">
+
+      <!-- Hero Banner -->
       <div id="homepageHeroBanner" class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden shadow-2xl border border-indigo-900/40">
 
-        <!-- Scroll-Driven Translucent Canvas Layer (Confined strictly to homepage hero) -->
+        <!-- Drone flyover canvas – confined strictly to the hero banner -->
         <canvas id="heroFrameCanvas" class="hero-scroll-canvas" aria-hidden="true"></canvas>
-
-        <!-- Readability Tint Overlay Layer (Preserves crystal-clear text readability) -->
-        <div class="hero-backdrop-tint" aria-hidden="true"></div>
 
         <!-- Foreground Hero Content -->
         <div class="hero-content-layer max-w-2xl">

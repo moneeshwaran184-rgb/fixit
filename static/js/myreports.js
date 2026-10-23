@@ -11,6 +11,14 @@ const MyReports = {
 
   /** Called by App.switchTab('myreports') every time the tab is opened. */
   async load() {
+    const isAdmin = await API.isAdmin();
+    if (isAdmin) {
+      if (window.App) {
+        await App.switchTab('dashboard');
+      }
+      return;
+    }
+
     const user = await API.getCurrentUser();
 
     if (!user) {
@@ -95,6 +103,76 @@ const MyReports = {
       issues.forEach(issue => {
         // Reuse Dashboard.createIssueCard so cards look identical to the campus feed
         const card = Dashboard.createIssueCard(issue);
+
+        // Add Delete button only to report cards inside the student's My Reports tab
+        const actionRow = document.createElement('div');
+        actionRow.className = 'pt-3 mt-2 border-t border-slate-100 flex items-center justify-end';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'delete-report-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition focus:outline-none focus:ring-2 focus:ring-rose-400';
+        deleteBtn.setAttribute('title', 'Delete this report');
+        deleteBtn.innerHTML = `
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          <span>Delete</span>
+        `;
+
+        deleteBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Ask for confirmation
+          const confirmed = window.confirm("Delete this report? This cannot be undone.");
+          if (!confirmed) {
+            return;
+          }
+
+          // Disable the button while deleting
+          deleteBtn.disabled = true;
+          deleteBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          const originalHtml = deleteBtn.innerHTML;
+          deleteBtn.innerHTML = `
+            <span class="animate-spin inline-block mr-1">⏳</span>
+            <span>Deleting...</span>
+          `;
+
+          try {
+            await API.deleteIssue(issue.id);
+
+            // Confirmed success: remove the card and refresh existing feed/counts as needed
+            App.showToast('Report deleted successfully.', 'success');
+            card.remove();
+
+            // If no more cards in container, render empty state
+            if (!container.querySelector('.issue-card')) {
+              MyReports._fetchAndRender();
+            }
+
+            if (window.Dashboard) {
+              window.Dashboard.loadIssues();
+              window.Dashboard.loadQuickStats();
+            }
+            if (window.Admin && typeof window.Admin.loadAdminData === 'function') {
+              window.Admin.loadAdminData();
+            }
+            if (window.Analytics && typeof window.Analytics.loadAnalytics === 'function') {
+              window.Analytics.loadAnalytics();
+            }
+          } catch (err) {
+            // On failure, keep the card and show a clear error. Never show success unless deletion actually succeeded.
+            deleteBtn.disabled = false;
+            deleteBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            deleteBtn.innerHTML = originalHtml;
+            if (window.App) App.refreshIcons();
+
+            console.error('Failed to delete report:', err);
+            const errMsg = err?.message || 'Failed to delete report';
+            App.showToast(errMsg, 'error');
+          }
+        });
+
+        actionRow.appendChild(deleteBtn);
+        card.appendChild(actionRow);
         container.appendChild(card);
       });
 

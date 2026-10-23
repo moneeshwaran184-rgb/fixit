@@ -629,6 +629,46 @@ const API = {
     return { issues: formatted, total: formatted.length };
   },
 
+  // Delete a report (Authenticated student deleting their own submission)
+  async deleteIssue(id) {
+    if (!this.client) throw new Error('Supabase client not initialized');
+
+    // Strictly verify real authenticated session directly from Supabase Auth
+    const { data: { user }, error: authErr } = await this.client.auth.getUser();
+    if (authErr || !user) {
+      throw new Error('Authentication required: You must be signed in to delete your report.');
+    }
+
+    let numericId = id;
+    if (typeof id === 'string' && id.startsWith('FIX-')) {
+      numericId = parseInt(id.replace('FIX-', ''), 10);
+    }
+
+    // Target specific report ID and current authenticated user's reporter_id
+    // Reuses existing authenticated Supabase client and existing deletion permissions
+    const { data, error } = await this.client
+      .from('reports')
+      .delete()
+      .eq('id', numericId)
+      .eq('reporter_id', user.id)
+      .select();
+
+    if (error) {
+      console.error('Delete issue error from Supabase:', error);
+      if (error.code === '42501' || (error.message && error.message.includes('permission denied'))) {
+        throw new Error('Database permission error: Server policies do not permit deleting reports.');
+      }
+      throw new Error(error.message || 'Failed to delete report from database.');
+    }
+
+    // Verify deletion actually affected a row in the database
+    if (!data || data.length === 0) {
+      throw new Error('Report could not be deleted or was not found.');
+    }
+
+    return { success: true, deleted: data[0] };
+  },
+
   async getSession() {
     if (!this.client) return null;
     try {
